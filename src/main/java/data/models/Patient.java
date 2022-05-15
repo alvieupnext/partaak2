@@ -1,10 +1,11 @@
 package data.models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 
 /** Represents a deidentified patient record. */
-public class Patient {
+public class Patient implements Serializable {
     public Date date;
     public Status status;
     public Sex sex;

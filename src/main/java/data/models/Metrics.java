@@ -1,7 +1,9 @@
 package data.models;
 
+import java.io.Serializable;
+
 /** Container class for some metrics of interest. */
-public class Metrics implements java.io.Serializable {
+public class Metrics implements Serializable {
     public long labConfirmed = 0;
     public long male = 0;
     public long female = 0;
