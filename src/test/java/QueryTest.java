@@ -10,12 +10,6 @@ public class QueryTest {
         try {
             //step one: create CDC server
             CDC cdc = new CDC();
-            ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(cdc, 0);
-
-            //register CDC server
-            Registry registry = LocateRegistry.getRegistry();
-            registry.rebind("CDC", stub);
-            System.out.println("Server ready");
             //step two: create chain of data servers (3 in this example)
             Date begin1 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
             Date end1 = new GregorianCalendar(2020, Calendar.AUGUST, 1).getTime();

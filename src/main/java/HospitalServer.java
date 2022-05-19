@@ -40,11 +40,16 @@ public class HospitalServer implements HospitalInterface{
     }
 
     public void add(Patient patient){
+        //add patient to batch and increase amount of patients
         batch[amountOfPatients++] = patient;
+        //if we reached our max batch size
         if (amountOfPatients == MAX_BATCH_SIZE){
             try{
+                //send batch to CDC server
                 this.server.patients(batch);
+                //clear batch
                 this.batch = new Patient[MAX_BATCH_SIZE];
+                //reset amount of patients
                 amountOfPatients = 0;
                 System.out.println("Sent New Patients to CDC");
             }
