@@ -17,6 +17,7 @@ public class DataServer implements DataServerInterface{
 
     String name;
 
+    //ArrayList important for adding new patients
     ArrayList<Patient> data;
 
     Date startDate;
@@ -59,7 +60,7 @@ public class DataServer implements DataServerInterface{
         this.data = new ArrayList<Patient>(Arrays.asList(generated));
     }
 
-    public void setup(){
+    private void setup(){
         this.generateData();
         this.register();
     }
@@ -77,14 +78,19 @@ public class DataServer implements DataServerInterface{
 
     public void totals(UUID queryID, Metrics result){
         try {
+            //create new parallel analyser
             CovidAnalyser parallel = new ParallelAnalyser(1, 50000);
+            //convert arraylist into array
             Patient[] arrayData = this.data.toArray(new Patient[data.size()]);
+            //execute phase one to get the metrics
             Metrics metric = parallel.phaseOne(arrayData);
+            //merge this metric with our result
+            Metrics intermediate = result.merge(metric);
             if (this.next != null){ //not the last dataserver
-                this.next.totals(queryID, result.merge(metric));
+                this.next.totals(queryID, intermediate);
             }
             else { //communicate to CDC server
-                server.onResultTotals(queryID, result.merge(metric));
+                server.onResultTotals(queryID, intermediate);
             }
         }
         catch (Exception e){

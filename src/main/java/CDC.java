@@ -16,6 +16,7 @@ public class CDC implements ServerInterface {
 
     public CDC () {
         this.dictionary = new HashMap<UUID, String>();
+        this.setup();
     }
 
     public void link(String dataSID){
@@ -28,6 +29,20 @@ public class CDC implements ServerInterface {
         catch (Exception e){
             System.err.println("Link to First Dataserver Failed");
         }
+    }
+
+    private void setup(){
+        try{
+            ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(this, 0);
+            //register CDC server
+            Registry registry = LocateRegistry.getRegistry();
+            registry.rebind("CDC", stub);
+            System.out.println("CDC Server ready");
+        }
+        catch (Exception e){
+            System.err.println("Failed to Setup CDC Server");
+        }
+
     }
 
     public void onResultTotals(UUID queryID, Metrics result){
@@ -115,12 +130,6 @@ public class CDC implements ServerInterface {
         try {
             //step one: create CDC server
             CDC cdc = new CDC();
-            ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(cdc, 0);
-
-            //register CDC server
-            Registry registry = LocateRegistry.getRegistry();
-            registry.rebind("CDC", stub);
-            System.out.println("Server ready");
             //step two: create chain of data servers (3 in this example)
             Date begin1 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
             Date end1 = new GregorianCalendar(2020, Calendar.AUGUST, 1).getTime();

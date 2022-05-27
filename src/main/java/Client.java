@@ -23,7 +23,7 @@ public class Client implements ClientInterface{
         this.setup();
     }
 
-    public void setup(){
+    private void setup(){
         try{
             //put this object in the rmiregistry
             Registry registry = LocateRegistry.getRegistry();
@@ -47,6 +47,7 @@ public class Client implements ClientInterface{
             this.addToDictionary(id, query);
             String queryString = "overview on " + attribute;
             System.out.println(this.clientName + " sent query: " + queryString);
+            //send query to CDC server
             server.totals(this.clientName, id);
         }
         catch (Exception e){
@@ -63,6 +64,7 @@ public class Client implements ClientInterface{
             this.addToDictionary(id, query);
             String queryString = "Date where " + amount + " are " + attribute;
             System.out.println(this.clientName + " sent query: " + queryString);
+            //send query to CDC server
             server.property(this.clientName, id, amount, attribute);
         }
         catch (Exception e){
@@ -102,6 +104,7 @@ public class Client implements ClientInterface{
     public void onResultOverview(UUID id, Metrics result){
         String[] query = dict.get(id);
         Attribute att = Attribute.valueOf(query[1]);
+        //get the right metric based on the attribute
         long requested = switch (att) {
             case labConfirmed -> result.labConfirmed;
             case female -> result.female;
