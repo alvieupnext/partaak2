@@ -1,5 +1,3 @@
-//TODO copy Client Interface to Client
-
 import data.models.*;
 
 import java.rmi.registry.LocateRegistry;
@@ -9,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
+
+//netid: avargasg
 
 public class Client implements ClientInterface{
 

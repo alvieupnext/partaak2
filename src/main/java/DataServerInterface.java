@@ -6,6 +6,8 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.UUID;
 
+//netid: avargasg
+
 public interface DataServerInterface extends Remote {
     void totals(UUID queryID, Metrics result) throws RemoteException;
     void property(UUID queryID, int amount, Attribute att) throws RemoteException;

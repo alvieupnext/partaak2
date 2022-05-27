@@ -8,9 +8,8 @@ import java.util.Date;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
-/**
- * TODO: A parallel implementation of CovidAnalyser using Java Fork/Join. Carefully read the assignment for detailed instructions and requirements.
- */
+//netid: avargasg
+
 public class ParallelAnalyser implements CovidAnalyser  {
     final int p; // The parallelism level (i.e. max. # cores that can be used by Java Fork/Join).
     final int T; // The sequential threshold.

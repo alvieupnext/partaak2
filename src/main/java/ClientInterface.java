@@ -5,6 +5,8 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.UUID;
 
+//netid: avargasg
+
 public interface ClientInterface extends Remote {
     void onResultOverview(UUID queryID, Metrics result) throws RemoteException;
     void onResultDate(UUID queryID, Date result) throws RemoteException;

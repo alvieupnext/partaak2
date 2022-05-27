@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
+//netid: avargasg
+
 public class DataServer implements DataServerInterface{
 
     String name;

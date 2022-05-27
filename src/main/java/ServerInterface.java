@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.UUID;
 
+//netid: avargasg
 
 public interface ServerInterface extends Remote {
     void totals(String clientID, UUID queryID) throws RemoteException;

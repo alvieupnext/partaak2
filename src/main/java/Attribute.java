@@ -1,3 +1,5 @@
+//netid: avargasg
+
 public enum Attribute {
     labConfirmed,
     male,

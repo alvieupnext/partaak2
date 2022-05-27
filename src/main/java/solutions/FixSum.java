@@ -6,6 +6,8 @@ import data.models.Sex;
 import java.util.Date;
 import java.util.concurrent.RecursiveAction;
 
+//netid: avargasg
+
 public class FixSum extends RecursiveAction {
     Node node;
     int fromLeftFemales;

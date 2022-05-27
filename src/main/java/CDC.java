@@ -6,6 +6,8 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
+//netid: avargasg
+
 public class CDC implements ServerInterface {
 
     DataServerInterface dataServer;
