@@ -140,30 +140,29 @@ public class DataServer implements DataServerInterface{
     }
 
     public void add(Patient patient){
-        try{
-            //date between startDate and endDate => not after endDate and not before beginDate
-            Date targetDate = patient.date;
-            if (!targetDate.before(startDate) && !targetDate.after(endDate)){
-                for (int i = 0; i < data.size(); i++){
-                    Patient dataPatient = data.get(i);
-                    if (dataPatient.date.equals(targetDate)){ //found the correct date
-                        data.add(i, patient); //add patient to data on this index
-                        System.out.println("Added " + patient + "to Dataserver "+ name);
-                        return;
+            try{
+                //date between startDate and endDate => not after endDate and not before beginDate
+                Date targetDate = patient.date;
+                if (!targetDate.before(startDate) && !targetDate.after(endDate)){
+                    for (int i = 0; i < data.size(); i++){
+                        Patient dataPatient = data.get(i);
+                        if (dataPatient.date.equals(targetDate)){ //found the correct date for our new patient
+                            data.add(i, patient); //add patient to data on this index
+                            System.out.println("Added " + patient + "to Dataserver "+ name);
+                            return;
+                        }
                     }
+                    //Error here if patient could not be added
+                    System.err.println("Failed to Add Patient in Dataserver " + name);
                 }
-                //Error here if patient could not be added
-                System.err.println("Failed to Add Patient in Dataserver " + name);
+                else //Date not in this dataserver
+                    if (this.next != null){ //still servers available
+                        this.next.add(patient);
+                    } //if no more servers connected, ignore the patient
             }
-            else //Date not in this dataserver
-                if (this.next != null){ //still servers available
-                this.next.add(patient);
-            } //if no further server, ignore the patient
-        }
-        catch (Exception e){
-            System.err.println("DataServer: Add Patient failed from " + name + e);
-        }
-
+            catch (Exception e) {
+                System.err.println("DataServer: Add Patient failed from " + name + e);
+            }
     }
 
 

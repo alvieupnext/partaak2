@@ -33,6 +33,7 @@ public class CDC implements ServerInterface {
 
     private void setup(){
         try{
+            //generate stub for this object
             ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(this, 0);
             //register CDC server
             Registry registry = LocateRegistry.getRegistry();

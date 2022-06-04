@@ -77,6 +77,7 @@ public class Client implements ClientInterface{
         try{
             Registry registry = LocateRegistry.getRegistry();
             this.hospitalServer = (HospitalInterface) registry.lookup(name);
+            System.out.println(this.clientName + " connected to Hospital Server: " + name);
         }
         catch (Exception e){
             System.err.println("Failed to Connect to Hospital" + name + e);

@@ -32,13 +32,16 @@ public class MainTest {
             client2.date(3000, "deceased"); //30/07/2021
             client3.overview("intensiveCare"); //895
             client4.date(110000, "male"); //15/08/2021
-            //Test 3: Adding new patients to the dataset is possible
+            //Test 3: Adding new patients to the dataset is possible (only if client is connected to a hospital server)
             String hospitalName = "hospitalTest";
             HospitalServer hos = new HospitalServer(hospitalName);
+            //ICU
+            Patient patient1 = new Patient(new GregorianCalendar(2020, Calendar.AUGUST, 9).getTime(), Status.LAB_CONFIRMED, Sex.MALE, AgeGroup.FORTIES, true, true, false, false);
+            //adding patient should throw exception when not connected to hospital
+            client1.addPatient(patient1);
             client1.connect(hospitalName);
             client3.connect(hospitalName);
             //Client 1 sends new ICU case
-            Patient patient1 = new Patient(new GregorianCalendar(2020, Calendar.AUGUST, 9).getTime(), Status.LAB_CONFIRMED, Sex.MALE, AgeGroup.FORTIES, true, true, false, false);
             client1.addPatient(patient1);
             client3.overview("intensiveCare"); //should remain 895 (batch size not yet met)
             //Client 2 sends new ICU + comorbidities case
