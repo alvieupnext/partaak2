@@ -10,10 +10,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 //netid: avargasg
 
 public class DataServer implements DataServerInterface{
+
+    //locks for ensuring proper concurrency in the data server
+
+    //using a read write lock as it will prevent data races without limiting multiple read access
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+
+    //used for totals and property
+    private final Lock readLock = readWriteLock.readLock();
+
+    //used for adding patients
+    private final Lock writeLock = readWriteLock.writeLock();
 
     String name;
 
@@ -79,6 +93,7 @@ public class DataServer implements DataServerInterface{
     }
 
     public void totals(UUID queryID, Metrics result){
+        readLock.lock(); //acquire lock for reading (does not block other threads from reading)
         try {
             //create new parallel analyser
             CovidAnalyser parallel = new ParallelAnalyser(1, 50000);
@@ -98,6 +113,9 @@ public class DataServer implements DataServerInterface{
         catch (Exception e){
             System.err.println("Totals failed on dataserver " + name);
         }
+        finally {
+            readLock.unlock(); //release lock when done
+        }
     }
 
     //used by property to get the right test
@@ -115,6 +133,7 @@ public class DataServer implements DataServerInterface{
     }
 
     public void property(UUID queryID, int amount, Attribute att){
+        readLock.lock(); //acquire lock for reading (does not block other threads from reading)
         try{
             int intermed = amount; //intermediate value
             for (Patient patient: data){
@@ -138,7 +157,9 @@ public class DataServer implements DataServerInterface{
         catch (Exception e){
             System.err.println("Property failed on dataserver " + name + " " + e);
         }
-
+        finally {
+            readLock.unlock(); //release lock when done
+        }
     }
 
     //check whether date is between our start and end date
@@ -148,26 +169,30 @@ public class DataServer implements DataServerInterface{
     }
 
     public void add(Patient patient){
-            try{
-                Date targetDate = patient.date;
-                if (between(targetDate)){
-                    for (int i = 0; i < data.size(); i++){
-                        Patient dataPatient = data.get(i);
-                        if (dataPatient.date.equals(targetDate)){ //found the correct date for our new patient
-                            data.add(i, patient); //add patient to data on this index
-                            System.out.println("Added " + patient + "to Dataserver "+ name);
-                            return;
-                        }
+        writeLock.lock();  //acquire lock for writing (makes all read/write threads wait)
+        try{
+            Date targetDate = patient.date;
+            if (between(targetDate)){
+                for (int i = 0; i < data.size(); i++){
+                    Patient dataPatient = data.get(i);
+                    if (dataPatient.date.equals(targetDate)){ //found the correct date for our new patient
+                        data.add(i, patient); //add patient to data on this index
+                        System.out.println("Added " + patient + "to Dataserver "+ name);
+                        return;
                     }
                 }
-                else //Date not in this dataserver
-                    if (this.next != null){ //still servers available
-                        this.next.add(patient);
-                    } //if no more servers connected, ignore the patient
             }
-            catch (Exception e) {
-                System.err.println("DataServer: Add Patient failed from " + name + e);
-            }
+            else //Date not in this dataserver
+                if (this.next != null){ //still servers available
+                    this.next.add(patient);
+                } //if no more servers connected, ignore the patient
+        }
+        catch (Exception e) {
+            System.err.println("DataServer: Add Patient failed from " + name + e);
+        }
+        finally {
+            writeLock.unlock();
+        }
     }
 
 
