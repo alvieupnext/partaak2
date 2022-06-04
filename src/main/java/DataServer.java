@@ -20,10 +20,12 @@ public class DataServer implements DataServerInterface{
     //ArrayList important for adding new patients
     ArrayList<Patient> data;
 
+    //start and end dates
     Date startDate;
 
     Date endDate;
 
+    //next data server
     DataServerInterface next;
 
     //cdc server
@@ -139,11 +141,16 @@ public class DataServer implements DataServerInterface{
 
     }
 
+    //check whether date is between our start and end date
+    private boolean between(Date targetDate){
+        //date between startDate and endDate => not after endDate and not before beginDate
+        return !targetDate.before(startDate) && !targetDate.after(endDate);
+    }
+
     public void add(Patient patient){
             try{
-                //date between startDate and endDate => not after endDate and not before beginDate
                 Date targetDate = patient.date;
-                if (!targetDate.before(startDate) && !targetDate.after(endDate)){
+                if (between(targetDate)){
                     for (int i = 0; i < data.size(); i++){
                         Patient dataPatient = data.get(i);
                         if (dataPatient.date.equals(targetDate)){ //found the correct date for our new patient
@@ -152,8 +159,6 @@ public class DataServer implements DataServerInterface{
                             return;
                         }
                     }
-                    //Error here if patient could not be added
-                    System.err.println("Failed to Add Patient in Dataserver " + name);
                 }
                 else //Date not in this dataserver
                     if (this.next != null){ //still servers available
