@@ -39,6 +39,7 @@ public class MainTest {
             Patient patient1 = new Patient(new GregorianCalendar(2020, Calendar.AUGUST, 9).getTime(), Status.LAB_CONFIRMED, Sex.MALE, AgeGroup.FORTIES, true, true, false, false);
             //adding patient should throw exception when not connected to hospital
             client1.addPatient(patient1);
+            //connecting clients
             client1.connect(hospitalName);
             client3.connect(hospitalName);
             //Client 1 sends new ICU case
